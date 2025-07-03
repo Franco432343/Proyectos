@@ -1,0 +1,50 @@
+tareas = []
+
+def mostrar_menu():
+    print("\n Gestor de Tareas ")
+    print("1. Ver tareas")
+    print("2. Agregar tarea")
+    print("3. Eliminar tarea")
+    print("4. Salir")
+
+def ver_tareas():
+    if tareas:
+        print("\n Tus tareas:")
+        for i, tarea in enumerate(tareas, 1):
+            print(f"{i}. {tarea}")
+    else:
+        print("\n No tenés tareas por ahora.")
+
+def agregar_tarea():
+    nueva = input(" Escribí la nueva tarea: ")
+    tareas.append(nueva)
+    print(" Tarea agregada.")
+
+def eliminar_tarea():
+    ver_tareas()
+    try:
+        num = int(input(" Número de tarea a eliminar: "))
+        if 1 <= num <= len(tareas):
+            eliminada = tareas.pop(num - 1)
+            print(f" Tarea '{eliminada}' eliminada.")
+        else:
+            print(" Número inválido.")
+    except ValueError:
+        print(" Ingresá un número válido.")
+
+# Bucle principal
+while True:
+    mostrar_menu()
+    opcion = input(" Elegí una opción (1-4): ")
+
+    if opcion == "1":
+        ver_tareas()
+    elif opcion == "2":
+        agregar_tarea()
+    elif opcion == "3":
+        eliminar_tarea()
+    elif opcion == "4":
+        print(" ¡Chau! Que tengas un buen día.")
+        break
+    else:
+        print(" Opción no válida.")

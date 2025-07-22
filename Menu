@@ -1,0 +1,733 @@
+from genericpath import exists
+import os
+import pickle
+import os.path
+from re import A
+import datetime
+from turtle import pos
+
+class Operaciones:
+    def __init__(self):
+        self.Patente = ""
+        self.CodProd = 0
+        self.FechaCupo = "" 
+        self.Estado = ""
+        self.Bruto = 0
+        self.Tara = 0
+
+class Productos:
+    def __init__(self):
+        self.CodProd = 0
+        self.NombreProd = ""
+        self.CodEstado = True
+
+class Rubros:
+    def __init__(self):
+        self.CodRub = 0
+        self.NombreRub = ""
+
+class RubX:
+    def __init__(self):
+        self.CodRub = 0
+        self.CodProd = 0
+        self.ValMinAdm = 0 # no menor a 0 float
+        self.ValMaxAdm = 0 # no mayor a 100
+
+class Silos:
+    def __init__(self):
+        self.CodSilo = 0
+        self.NombreSilo = ""
+        self.CodProd = 0
+        self.Stock = 0
+
+
+
+afOperaciones = "c:/ayed/Operaciones.dat"  
+if not os.path.exists(afOperaciones):   
+	alOperaciones = open (afOperaciones, "w+b")   
+else:
+	alOperaciones = open (afOperaciones, "r+b")
+
+afProductos = "c:/ayed/Productos.dat"  
+if not os.path.exists(afProductos):   
+	alProductos = open (afProductos, "w+b")   
+else:
+	alProductos = open (afProductos, "r+b")
+
+afRubros = "c:/ayed/Rubros.dat"  
+if not os.path.exists(afRubros):   
+	alRubros = open (afRubros, "w+b")   
+else:
+	alRubros = open (afRubros, "r+b")
+
+afRubX = "c:/ayed/RubX.dat"  
+if not os.path.exists(afRubX):   
+	alRubX = open (afRubX, "w+b")   
+else:
+	alRubX = open (afRubX, "r+b")
+
+afSilos = "c:/ayed/Silos.dat"  
+if not os.path.exists(afSilos):   
+	alSilos = open (afSilos, "w+b")   
+else:
+	alSilos = open (afSilos, "r+b")
+
+def formatearOperaciones(Operaciones):
+    Operaciones.Patente = str(Operaciones.Patente).ljust(7)       
+    Operaciones.CodProd = str(Operaciones.CodProd).ljust(6)
+    Operaciones.FechaCupo = str(Operaciones.FechaCupo).ljust(12)
+    Operaciones.Bruto = str(Operaciones.Bruto).ljust(7)
+    Operaciones.Tara = str(Operaciones.Tara).ljust(7)
+
+def formatearProductos(Productos):
+    Productos.CodProd = str(Productos.CodProd).ljust(6)
+    Productos.NombreProd = str(Productos.NombreProd).ljust(10)
+
+def formatearRubros(Rubros):
+    Rubros.CodRub = str(Rubros.CodRub).ljust(7)
+    Rubros.NombreRub = str(Rubros.NombreRub).ljust(10)
+
+def formatearRubXprod(RubX):
+    RubX.CodRub = str(RubX.CodRub).ljust(7)
+    RubX.CodProd = str(RubX.CodProd).ljust(6)
+    RubX.ValMinAdm = str(RubX.ValMinAdm).ljust(3)
+    RubX.ValMaxAdm = str(RubX.ValMaxAdm).ljust(3)
+
+def formatearSilos(Silos):
+    Silos.CodSilo = str(Silos.CodSilo).ljust(7)
+    Silos.NombreSilo = str(Silos.NombreSilo).ljust(10)
+    Silos.CodProd = str(Silos.CodProd).ljust(7)
+    Silos.Stock = str(Silos.Stock).ljust(7)
+
+
+global opcAdmin, a, val 
+opcAdmin = 0
+
+
+
+def administraciones():
+    y = False
+    while y == False:
+        print('--- MENÚ ADMINISTRACIONES ---\nA. Titulares\nB. Productos\nC. Rubros\nD. Rubros por producto\nE. Silos\nF. Sucursales\nG. Producto por titular\nV. Volver al menú principal')
+        opcAdmin = input('Ingrese una opción: ')
+        if  (opcAdmin == 'C') or (opcAdmin == 'D') or (opcAdmin == 'E'):
+            menuOpciones(opcAdmin)
+        elif opcAdmin == 'B':
+            menuOpcionesProductos()
+        elif (opcAdmin == 'A') or (opcAdmin == 'F') or (opcAdmin == 'G'):
+            print('"Esta funcionalidad esta en construccion"')
+        elif opcAdmin == 'V':
+            y = True
+        else:
+            print('Ingrese una opción correcta.')
+
+
+def menuOpciones(opcAdmin):
+    z = False                         
+    if opcAdmin == 'C':                  
+        a = 'DE RUBROS'
+    elif opcAdmin == 'D':
+        a = 'DE RUBROS POR PRODUCTO'
+    elif opcAdmin == 'E':
+        a = 'DE SILOS'
+    else:
+        a = ""
+    while z == False:
+        print('--- MENU DE OPCIONES',(a),'---\nA. Alta\nB. Baja\nC. Consulta\nM. Modificación\nV. Volver al menú anterior')
+        opcSubmenu = input('Ingrese una opcion: ')
+        if (opcSubmenu == 'A'):
+            altas(opcAdmin)
+        elif (opcSubmenu == 'B') or (opcSubmenu == 'C') or (opcSubmenu == 'M'):
+            print('"Esta funcionalidad está en construcción"')
+        elif opcSubmenu == 'V':
+            z = True
+        else:
+            print('¡ERROR!\nIngrese una opción correcta.')
+
+
+def menuOpcionesProductos():
+    z = False
+    while z == False:
+        print('--- MENU DE OPCIONES DE PRODUCTOS---\nA. Alta\nB. Baja\nC. Consulta\nM. Modificación\nV. Volver al menú anterior')
+        opcSubmenu = input('Ingrese una opcion: ')
+        if (opcSubmenu == 'A'):
+            altaProductos()
+        elif (opcSubmenu == 'B'): 
+            Baja()
+        elif(opcSubmenu == 'C'):
+            consultaProd()
+        elif (opcSubmenu == 'M'):
+            Modificacion()
+        elif opcSubmenu == 'V':
+            z = True
+        else:
+            print('¡ERROR!\nIngrese una opción correcta.')
+
+              
+
+
+def altaProductos():
+    t = os.path.getsize(afRubros)
+    alRubros.seek(0, 0)
+    prod = Productos()
+    print('--- ALTA DE PRODUCTOS ---')
+    prod.NombreProd = input("Ingrese el nombre del nuevo producto:\n")
+    prod.CodProd = input("Ingrese el codigo del nuevo producto:\n")
+    ValidarAlta(altaProductos)
+    pickle.dump(prod, alProductos)
+    alProductos.flush()
+
+
+def Baja():
+    global afProductos, alProductos
+    prod = Productos()
+    t = os.path.getsize(afProductos)
+    if t != 0:
+        cod = input("Ingrese el codigo del producto(* para salir)")
+        while codigo != "0": 
+            pos = posicionarseProductos(cod)
+            alProductos.seek(pos)
+            prod.estado = False
+            formatearProductos(prod)
+            pickle.dump(prod,alProductos)
+            alProductos.flush()
+            print("Se ha eliminado correctamente el producto\n")
+            codigo = 0
+    else:
+        print("No hay productos cargados")
+    ValidarAlta(Baja)
+
+
+def Modificacion():
+    global afProductos, alProductos
+    prod = Productos()
+    t = os.path.getsize(afProductos)
+    alProductos.seek(0,0)
+    if t != 0:
+        codigo = (input("Ingrese el codigo del producto a cambiar. 0 para salir"))
+        while codigo != 0: 
+            pos = posicionarseProductos(codigo)
+            alProductos.seek(pos)
+            prod.CodProd = (input("Ingrese el nuevo codigo para el producto"))
+            prod.NombreProd = (input("Ingrese el nuevo nombre para el producto"))
+            prod.NombreProd = prod.nombre.upper()
+            formatearProductos(prod)
+            pickle.dump(prod,alProductos)
+            alProductos.flush()
+            codigo = 0
+    ValidarAlta(Modificacion)
+
+
+def consultaProd():
+    global afProductos, alProductos
+    t = os.path.getsize(afProductos)
+    alProductos.seek(0, 0)
+    prod = Productos()
+    while alProductos.tell()<t:
+        prod = pickle.load(alProductos)
+        if prod.CodEstado == True:
+            print(prod.CodProd, prod.NombreProd, prod.CodEstado)
+            
+            
+
+def posicionarseProductos(codigo):
+    global afProductos, alProductos
+    aux = Productos()
+
+    t = os.path.getsize(afProductos)
+    alProductos.seek(0, 0)
+    while (alProductos.tell()<t) and (aux.CodProd != codigo):
+        pos = alProductos.tell()
+        aux = pickle.load(alProductos)
+    if (aux.CodProd) != codigo:
+        pos = -1
+    return pos
+
+
+
+
+
+def altas(opcAdmin):
+    if opcAdmin == 'C':
+        altaRubros()
+    elif opcAdmin == 'D':
+        altaRubX()
+    elif opcAdmin == 'E':
+        altaSilos()
+    else:
+        print('error')
+
+def ValidarAlta(modalta):
+    opc = input("---\n¿Desea terminar la operacion?\n('S' para terminar, 'N' para volver atras).\n---\n")
+    if opc == 'N':
+        modalta()
+    elif opc == 'S':
+        print("---\nDatos guardados correctamente.\n---")
+    else:
+        while (opc != 'S') and (opc !='N'):
+            opc = input('---\n¡ERROR CRITICO!\n---\nIngrese "S" para terminar O "N" para volver, por favor:')
+
+        
+def altaRubros():
+    t = os.path.getsize(afRubros)
+    alRubros.seek(t, 0)
+    rubros = Rubros()
+    print('--- ALTA DE RUBROS ---')
+    rubros.CodRub = input("Ingrese el codigo del nuevo rubro:")
+    rubros.NombreRub = input("Ingrese el nombre del nuevo rubro:")
+    ValidarAlta(altaRubros)
+    pickle.dump(rubros, alRubros)
+    alRubros.flush()
+
+
+def altaRubX():
+
+    t = os.path.getsize(afRubX)
+    alRubX.seek(t, 0)
+    rubx = RubX()
+    print('--- ALTA DE RUBROS POR PRODUCTO ---')
+    rubx.CodRub = input("Ingrese el codigo de rubro:")
+    rubx.CodProd = input("Ingrese el codigo de producto:")
+    rubx.ValMinAdm = float(input("Ingrese el valor minimo admitido para los productos(No puede ser menor a 0):"))
+    while (rubx.ValMinAdm < 0) or (rubx.ValMinAdm > 100):
+        print("¡ERROR!\nPor favor ingrese otro valor:")
+        rubx.ValMinAdm = float(input("Ingrese el valor minimo admitido para los productos(No puede ser menor a 0 ni mayor a 100.):"))
+    rubx.ValMaxAdm = float(input("Ingrese el valor maximo admitido para los productos(No puede ser menor a 0 ni mayor a 100.):"))
+    while (rubx.ValMaxAdm < 0) or (rubx.ValMaxAdm > 100):
+        print("¡ERROR!\nPor favor ingrese otro valor:")
+        rubx.ValMaxAdm = float(input("Ingrese el valor maximo admitido para los productos(No puede ser menor a 0 ni mayor a 100.):"))
+    ValidarAlta(altaRubX)
+    pickle.dump(rubx, alRubX)
+    alRubX.flush()
+
+
+def altaSilos():                         
+    t = os.path.getsize(afSilos)
+    alSilos.seek(t, 0)
+    silos = Silos()
+    print('--- ALTA DE SILOS ---')
+    silos.CodSilo = input("Ingrese el codigo del nuevo silo:")
+    silos.NombreSilo = input("Ingrese el nombre del nuevo silo:")
+    silos.CodProd = input("Ingrese el codigo de producto:")
+    silos.Stock = input("Ingrese el stock del silo:")
+    ValidarAlta(altaSilos)
+    pickle.dump(silos, alSilos)
+    alSilos.flush()
+
+
+
+
+def EntregaDeCupos():
+    global afOperaciones, alOperaciones
+    ValidarPat = 0
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0, 0)
+    op = Operaciones()
+    Patente = (input('ingrese una patente, debe tener entre 6 y 7 caracteres("0" para finalizar la operacion).'))
+    ValidarPat = ValidarPatente(Patente)
+    
+    while ValidarPat != 0 and ValidarPat != -1:
+        print('La patente ya esta cargada.')
+        ValidarPat = -2
+    
+    while ValidarPat == -1 and Patente != 0:
+        CodProd = (input("Ingrese el codigo de producto:"))
+        ValidarProd = posicionarseProductos(CodProd)
+        if ValidarProd != -1:
+            FechaCupo = (input("Ingrese la fecha del cupo:"))
+            ValidarFec = ValidarFecha(FechaCupo)
+            
+            if (ValidarPat == ValidarFec) and (ValidarFec != -1) and (ValidarPat != -1):
+                print('Cupo ya otorgado para esa fecha.')
+                Patente = 0
+            elif (ValidarFec == -1):
+                if t == 0:
+                    op.Patente = Patente
+                    op.CodProd = CodProd
+                    op.FechaCupo = FechaCupo
+                    op.Estado = "P"
+                    formatearOperaciones(op)
+                    pickle.dump(op, alOperaciones)
+                    alOperaciones.flush()
+                    print('Cupo cargado correctamente')
+                    Patente = 0
+                else:
+                    alOperaciones.seek(t)
+                    op.Patente = Patente
+                    op.CodProd = CodProd
+                    op.FechaCupo = FechaCupo
+                    op.Estado = "P"
+                    formatearOperaciones(op)
+                    pickle.dump(op, alOperaciones)
+                    alOperaciones.flush()
+                    print('Cupo cargado correctamente.')
+                    Patente = 0
+            else:
+                print('Ha ocurrido un error en la operacion.')
+                Patente = 0
+        elif ValidarProd == -1:
+            print('Codigo de producto inexistente.')
+            Patente = 0
+        else:
+            print('nose')
+    ValidarAlta(EntregaDeCupos)
+
+
+def ValidarPatente(pat):
+    global afOperaciones, alOperaciones
+    pos = 0
+    aux = Operaciones()
+
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0, 0)
+    while (alOperaciones.tell()<t) and (aux.Patente.strip() != pat):
+        pos = alOperaciones.tell()
+        aux = pickle.load(alOperaciones)
+    if aux.Patente.strip() != pat:
+        pos = -1
+    return pos
+
+
+
+def ValidarFecha(fec):
+    global afOperaciones, alOperaciones
+    pos = 0
+    aux = Operaciones()
+
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0, 0)
+    if t == 0:
+        return -1
+    else:
+        while (alOperaciones.tell()<t) and (aux.FechaCupo.strip() != fec):
+            pos = alOperaciones.tell()
+            aux = pickle.load(alOperaciones)
+        if aux.FechaCupo.strip() != fec:
+            pos = -1
+        return pos
+
+
+def ValidarFecha2(fec):
+    global afOperaciones, alOperaciones
+    pos = 0
+    aux = Operaciones()
+
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0, 0)
+    if t == 0:
+        return -1
+    else:
+        while (alOperaciones.tell()<t) and (pos != fec):
+            pos = alOperaciones.tell()
+            aux = pickle.load(alOperaciones)
+        if pos != fec:
+            pos = -1
+        elif (pos == fec) and (aux.Estado.strip()== 'P'):
+            return pos
+        else:
+            return -1
+
+def posicionarseEnOperacione(patente):
+    global alOperaciones, afOperaciones
+    
+    aux = Operaciones()
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0)
+    while alOperaciones.tell()<t and (aux.Patente) != patente:
+        pos = alOperaciones.tell()
+        aux = pickle.load(alOperaciones)
+    return pos
+
+
+def Recepcion():
+    global afOperaciones, alOperaciones
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0, 0)
+    op = Operaciones()
+    Patente = input('ingrese una patente, debe tener entre 6 y 7 caracteres("0" para finalizar la operacion).\n')
+    ValidarPat = ValidarPatente(Patente)
+    while Patente != 0 and ValidarPat != 0 and ValidarPat != -1:
+        print('La fecha del cupo era la del dia')
+        ValidarFec = ValidarFecha2(ValidarPat)
+        if ValidarFec != -1: 
+            op.Estado = 'A'
+            formatearOperaciones(op)
+            pickle.dump(op, alOperaciones)
+            alOperaciones.flush()
+            print('El estado del camion fue actualizado a "Arribado".\n')
+            Patente = 0
+        else:
+            print('Los datos ingresados son incorrectos o no se tiene cupo asignado para esta fecha.')
+            Patente = 0
+    if ValidarPat == -1:
+        print('La patente ingresada es incorrecta.\n')
+    ValidarAlta(Recepcion)        
+
+    
+
+def ValidarEstado(est):
+    global afOperaciones, alOperaciones  
+    pos = -1
+    aux = Operaciones()
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(est, 1)
+    if aux.Estado == 'P':
+        pos = 1
+    return pos
+    
+
+
+def registrar_calidad():
+    patente = input('ingrese la patente del camion(* para salir):')
+    while (patente != '*' ):
+        t = os.path.getsize(afOperaciones)
+        ñ = os.path.getsize(afRubX)
+        pos = 0
+        val = 0
+        i = 0
+        ValorAdm = 0
+        if (6<=len(patente)<=7):
+            pos = posicionarseEnOperacione(patente)
+            if (pos!=t):
+                val = busest(pos)
+                if (val == 1):
+                    alOperaciones.seek(pos,0)
+                    vrprod = Operaciones()
+                    vrprod = pickle.load(alOperaciones)
+                    alRubX.seek(0)
+                    r = RubX()
+                    vrrub = Rubros()
+                    while (alRubX.tell()<ñ and i < 2):
+                        r = pickle.load(alRubX)
+                        if (r.CodProd == vrprod.CodProd):
+                            k = os.path.getsize(afRubros)
+                            alRubros.seek(0)
+                            while (alRubros.tell() < k and i<2):
+                                vrrub = pickle.load(alRubros)
+                                if (vrrub.CodRub == r.CodRub):
+                                    print('codigo del rubro', r.CodRub )
+                                    print('nombre del rubro', vrrub.NombreRub)
+                                    ValorAdm = int(input('ingrese valor '))
+                                    if int(r.ValMaxAdm)> ValorAdm and ValorAdm > int(r.ValMinAdm):
+                                        print('dentro de rango')
+                                    else: 
+                                        i=i+1
+                                        print('fuera de rango')
+                    if (i<2):
+                        vrprod.Estado = 'CC'
+                        pickle.dump(vrprod, alOperaciones)
+                        alOperaciones.flush()
+                        print('Con calidad', vrprod.Estado)
+                        contarriv = contarriv + 1 
+                    elif (i==2):
+                        vrprod.Estado = 'R'
+                        print('Rechazado',vrprod.Estado)  
+                        pickle.dump(vrprod, alOperaciones)
+                        alOperaciones.flush()
+                elif val == 2 :
+                    print('ya ha sido controlado')             
+                else:
+                    print('no esta arrivado')
+            else:
+                print('la patente no existe')
+                            
+        else: 
+            print('ingrese patente de 6 o 7 digitos')
+        patente = input('ingrese la patente del camion(* para salir):')
+
+
+def busest(pos):
+    global alOperaciones
+
+    alOperaciones.seek(pos,0)
+    vrop = Operaciones() 
+    vrop = pickle.load(alOperaciones)
+
+    if (vrop.Estado == 'A'):
+        val = 1
+    elif(vrop.Estado == 'CC' or vrop.Estado == 'R'):
+        val = 2
+    else:
+        val = 0
+    return val
+
+
+
+def RegPesoBruto ():     
+    global afOperaciones, alOperaciones
+    patente = input('ingrese la patente del camion (* para salir):')
+       
+    while (patente != '*' ):
+        t = os.path.getsize(afOperaciones)
+        pos = 0
+        val = 0
+        if (6<=len(patente)<=7):
+            while (pos < t and val != 2):
+                pos = posicionarseEnPatente(patente)
+                if (pos!=t):
+                    val = busest(pos)
+                    if (val == 2):
+                        p = Operaciones()
+                        p.Bruto = int(input("Ingrese el peso bruto en toneladas: "))
+                        ModifEst(pos,val)
+                        print('cargado correctamente')
+                    else:
+                        print('el camion no esta CC')
+                else:
+                    print('la patente no existe')        
+        else:
+            print('La patente debe tener 6 o 7 caracteres')
+        patente = input('ingrese la patente del camion (* para salir):')
+
+
+
+
+def RegisTara (): 
+    global afSilos, alSilos, afOperaciones, alOperaciones
+
+    p = Operaciones()
+    sil = Silos()
+    patente = input('ingrese la patente del camion (* para salir):')
+    while (patente != '*' ):
+        t = os.path.getsize(afOperaciones) 
+        ñ = os.path.getsize(afSilos)
+        pos = 0
+        val = 0
+        Tara = 0
+        if (6<=len(patente)<=7):
+            while (pos < t and val != 3):
+                pos = posicionarseEnPatente(patente)
+                alOperaciones.seek(pos,0)
+                p = pickle.load(alOperaciones)
+                print('prod',p.CodProd)
+                if (pos!=t):
+                    val = busest(pos)
+                    if (val == 3):
+                        Tara = int(input("Ingrese la tara: "))
+                        if (int(p.Bruto) > Tara):
+                            Neto = int(p.Bruto - Tara)
+                            ModifEst(pos,val)
+                            print('neto', Neto,'tell',alSilos.tell())
+                            while (alSilos.tell()<ñ):
+                                print('a')
+                                alOperaciones.seek(pos,0)
+                                p = pickle.load(alOperaciones)
+                                alSilos.seek(0)
+                                sil = pickle.load(alSilos)
+                                print('silo',sil.CodProd,'prod',p.CodProd)
+                                if (int(p.CodProd) == int(sil.CodProd)):
+                                    alSilos.seek(pos)
+                                    sil.Stock = (int(sil.Stock) + Neto)
+                                    pickle.dump(sil, alSilos)
+                                    alOperaciones.flush()
+                                    print('cargo')
+                            
+                        else:
+                            print ("Error. Ingrese los datos correctamente ")
+
+        else:
+            print('La patente debe tener 6 o 7 caracteres')
+        patente = input('ingrese la patente del camion (* para salir):')    
+
+
+
+
+def ModifEst(pos,val):
+    global afOperaciones, alOperaciones
+    prod = Operaciones()
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(pos,0)
+    if t != 0:
+        if val == 3: 
+            pos = posicionarseOperaciones(codigo)
+            alOperaciones.seek(pos)
+            prod.Estado = 'F'
+            formatearOperaciones(prod)
+            pickle.dump(prod,alOperaciones)
+            alOperaciones.flush()
+        elif val == 2:
+            pos = posicionarseOperaciones(codigo)
+            alOperaciones.seek(pos)
+            prod.Estado = 'B'
+            formatearOperaciones(prod)
+            pickle.dump(prod,alOperaciones)
+            alOperaciones.flush()
+
+
+def posicionarseEnPatente(patente):
+    global alOperaciones, afOperaciones
+    
+    aux = Operaciones()
+
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0,0)
+    while alOperaciones.tell()<t and aux.Patente != patente:
+        pos = alOperaciones.tell()
+        aux = pickle.load(alOperaciones)
+    return pos
+        
+
+
+
+
+def Reportes(): 
+    global afOperaciones, alOperaciones
+
+    t = os.path.getsize(afOperaciones)
+    alOperaciones.seek(0)
+    aux = pickle.load(alOperaciones)
+    tamReg = alOperaciones.tell() 
+    print('Se otorgaron ', (t//tamReg), ' cupos.')
+    print('Se recibieron ', contarriv , ' camiones.')  
+    tp = os.path.getsize(afProductos)
+    reprod = Productos()
+    recont = Operaciones()
+    alProductos.seek(0, 0)
+    while alProductos.tell()<tp:
+        reprod = pickle.load(alProductos)
+        alOperaciones.seek(0, 0)
+        while alOperaciones.tell()<t:
+            recont = pickle.load(alOperaciones)
+            if (reprod.CodProd == recont.CodProd) and recont.Estado == 'F':
+                contprod = contprod + 1
+                neto = (recont.Bruto-recont.Tara)
+                pesototal = pesototal + neto
+                if menorp > neto:
+                    menorp = neto
+                    menorpat = pickle.load(alOperaciones)
+    print('Descargaron ', contprod, ' camiones de ',reprod.CodProd )
+    print('El peso neto total de los camiones de ',reprod.CodProd, ' es ', pesototal)
+    print('El peso neto promedio de los camiones de ',reprod.CodProd, ' es ', pesototal//contprod)
+    print('La patente del camión de ', reprod.CodProd, ' que menos producto descargó es ', menorpat.Patente)
+
+
+def ListSyR(): 
+    global afSilos,alSilos,afOperaciones,alOperaciones
+    alSilos.seek (0, 0)
+    aux = pickle.load(alSilos)
+    tamReg = alSilos.tell() 
+    t = os.path.getsize(afSilos)
+    cant = int(t / tamReg)  
+    for i in range(0,1):
+        for j in range (i+1, cant):
+            alSilos.seek (i*tamReg, 0)
+            auxi = pickle.load(alSilos)
+            alSilos.seek (j*tamReg, 0)
+            auxj = pickle.load(alSilos)
+            if (auxi.Stock < auxj.codigo_colmena):
+                alSilos.seek (i*tamReg, 0)
+                pickle.dump(auxj, alSilos)
+                alSilos.seek (j*tamReg, 0)
+                pickle.dump(auxi,alSilos)
+                alSilos.flush()          
+    alSilos.seek(0)  
+    aux = pickle.load(alSilos)          
+    print('El silo con mayor stock es: ',aux.Stock)
+    fecha = input('Ingrese una fecha: ')
+    t = os.path.getsize(afSilos)   
+    alOperaciones.seek(0)
+    a = Operaciones()
+    while alOperaciones.tell()<t:    
+        a = pickle.load(alOperaciones)
+        if (a.FechaCupo == fecha) and (a.Estado == 'R'):
+            print(a.Patente)

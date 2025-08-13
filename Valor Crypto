@@ -1,0 +1,33 @@
+# https://www.coingecko.com/api/documentation
+# 'https://api.coingecko.com/api/v3/simple/price?ids=&vs_currencies=usd'
+
+import requests
+
+def get_crypto_price(cryptocurrency):
+    url = f'https://api.coingecko.com/api/v3/simple/price?ids={cryptocurrency}&vs_currencies=usd'
+    
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code != 200:
+            return None
+        
+        data = response.json()
+        if cryptocurrency in data:
+            return data[cryptocurrency]['usd']
+        else:
+            return None
+    
+    except requests.exceptions.RequestException:
+        return None
+
+def main():
+    cryptocurrency = input('Ingrese el nombre de la criptomoneda: ').lower().strip()
+    price = get_crypto_price(cryptocurrency)
+    
+    if price is not None:
+        print(f'El precio de {cryptocurrency.capitalize()} es ${price}')
+    else:
+        print('No se pudo obtener el precio. Verifique el nombre o la conexión.')
+    
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,78 @@
+import pandas as pd
+import io # Módulo para simular un archivo en memoria
+
+# --- PASO 1: Creación de Datos de Ejemplo (Simulación de un archivo CSV) ---
+# Si tienes un archivo CSV real, ignora esta sección y ve al PASO 2.
+
+data_csv = """
+Nombre,Edad,Puntuacion,Ciudad
+Ana,28,85,Madrid
+Juan,35,92,Barcelona
+Elena,22,78,Valencia
+Carlos,41,60,Madrid
+Sofia,30,95,Barcelona
+"""
+
+# Leemos los datos simulados como si fueran un archivo:
+try:
+    # Usamos io.StringIO para simular la lectura de un archivo
+    df = pd.read_csv(io.StringIO(data_csv))
+    print("✅ Datos cargados con éxito (usando datos simulados).")
+except Exception as e:
+    print(f"❌ Error al cargar los datos simulados: {e}")
+    # Puedes descomentar la siguiente línea para cargar un archivo real:
+    # df = pd.read_csv('tu_archivo_de_datos.csv')
+    # print(f"Intenta cargar tu archivo CSV real aquí.")
+    exit() # Salir si la carga falló
+
+print("\n" + "="*50)
+
+# --- PASO 2: Exploración Inicial de los Datos ---
+
+print("\n## 1. Primeras 5 Filas del DataFrame (df.head()):")
+print(df.head())
+
+print("\n" + "="*50)
+
+print("\n## 2. Información General y Tipos de Datos (df.info()):")
+# info() muestra el número de entradas no nulas y los tipos de datos (dtype)
+df.info()
+
+print("\n" + "="*50)
+
+# --- PASO 3: Estadísticas Descriptivas ---
+
+print("\n## 3. Estadísticas Descriptivas de Columnas Numéricas (df.describe()):")
+# describe() calcula conteo, media, desviación estándar, valores min/max y cuartiles.
+print(df.describe())
+
+print("\n" + "="*50)
+
+print("\n## 4. Análisis Específico de la Columna 'Puntuacion':")
+puntuacion_media = df['Puntuacion'].mean()
+puntuacion_max = df['Puntuacion'].max()
+puntuacion_min = df['Puntuacion'].min()
+
+print(f"   -> Puntuación Media: {puntuacion_media:.2f}")
+print(f"   -> Puntuación Máxima: {puntuacion_max}")
+print(f"   -> Puntuación Mínima: {puntuacion_min}")
+
+print("\n" + "="*50)
+
+# --- PASO 4: Conteo de Valores Categóricos (Agrupación) ---
+
+print("\n## 5. Conteo de Valores por Ciudad (df['Ciudad'].value_counts()):")
+# value_counts() es fundamental para variables categóricas.
+conteo_ciudades = df['Ciudad'].value_counts()
+print(conteo_ciudades)
+
+print("\n" + "="*50)
+
+# --- PASO 5: Filtrado y Selección ---
+
+print("\n## 6. Filtrado: Personas con Puntuación Superior a 80:")
+# Crea una máscara booleana y luego filtra el DataFrame
+filtrado_alto = df[df['Puntuacion'] > 80]
+print(filtrado_alto)
+
+print("\n--- Análisis Básico Finalizado. ---")

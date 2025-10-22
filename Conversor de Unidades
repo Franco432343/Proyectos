@@ -1,0 +1,82 @@
+def celsius_a_fahrenheit(c):
+    """Convierte grados Celsius a Fahrenheit."""
+    return (c * 9/5) + 32
+
+def fahrenheit_a_celsius(f):
+    """Convierte grados Fahrenheit a Celsius."""
+    return (f - 32) * 5/9
+
+def kilometros_a_millas(km):
+    """Convierte Kilómetros a Millas."""
+    return km * 0.621371
+
+def millas_a_kilometros(mi):
+    """Convierte Millas a Kilómetros."""
+    return mi / 0.621371
+
+def mostrar_menu():
+    """Muestra el menú de opciones al usuario."""
+    print("\n--- Conversor de Unidades ---")
+    print("1. Temperatura (C° a F° / F° a C°)")
+    print("2. Distancia (Km a Mi / Mi a Km)")
+    print("3. Salir")
+    return input("Elige una opción (1, 2 o 3): ")
+
+def manejar_temperatura():
+    """Maneja las conversiones de temperatura."""
+    print("\n--- Conversión de Temperatura ---")
+    print("a. Celsius (°C) a Fahrenheit (°F)")
+    print("b. Fahrenheit (°F) a Celsius (°C)")
+    opcion = input("Elige una opción (a o b): ").lower()
+
+    try:
+        valor = float(input("Introduce el valor a convertir: "))
+        if opcion == 'a':
+            resultado = celsius_a_fahrenheit(valor)
+            print(f"{valor}°C es igual a {resultado:.2f}°F")
+        elif opcion == 'b':
+            resultado = fahrenheit_a_celsius(valor)
+            print(f"{valor}°F es igual a {resultado:.2f}°C")
+        else:
+            print("Opción no válida.")
+    except ValueError:
+        print("Error: Por favor, introduce un número válido.")
+
+def manejar_distancia():
+    """Maneja las conversiones de distancia."""
+    print("\n--- Conversión de Distancia ---")
+    print("a. Kilómetros (Km) a Millas (Mi)")
+    print("b. Millas (Mi) a Kilómetros (Km)")
+    opcion = input("Elige una opción (a o b): ").lower()
+
+    try:
+        valor = float(input("Introduce el valor a convertir: "))
+        if opcion == 'a':
+            resultado = kilometros_a_millas(valor)
+            print(f"{valor} Km es igual a {resultado:.2f} Mi")
+        elif opcion == 'b':
+            resultado = millas_a_kilometros(valor)
+            print(f"{valor} Mi es igual a {resultado:.2f} Km")
+        else:
+            print("Opción no válida.")
+    except ValueError:
+        print("Error: Por favor, introduce un número válido.")
+
+# --- Programa Principal (Loop) ---
+
+def main():
+    while True:
+        eleccion = mostrar_menu()
+
+        if eleccion == '1':
+            manejar_temperatura()
+        elif eleccion == '2':
+            manejar_distancia()
+        elif eleccion == '3':
+            print("¡Gracias por usar el conversor! Adiós.")
+            break
+        else:
+            print("Opción no válida. Por favor, elige 1, 2 o 3.")
+
+if __name__ == "__main__":
+    main()
